@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Solicitudes de Crédito</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" sizes="32x32" href="./img/logo-32.png" />
+    <link rel="icon" sizes="192x192" href="./img/logo-192.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://googleapis.com" rel="stylesheet">
+
+  </head>
+  <body>
+    <div class="container">
+      <img src="./img/logo-finesa.png" alt="Logo de la empresa" class="logo" />
+      <h1>Solicitudes de Crédito</h1>
+
+      <!-- Filtros -->
+      <div class="filters">
+        <div class="filter-group">
+          <label>Identificación Cliente</label>
+          <input
+            type="text"
+            id="filterIdentificacion"
+            placeholder="Ej: 12345678"
+          />
+        </div>
+        <div class="filter-group">
+          <label>Estado</label>
+          <select id="filterEstado">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Fecha desde</label>
+          <input type="date" id="filterFechaDesde" />
+        </div>
+        <div class="filter-group">
+          <label>Fecha hasta</label>
+          <input type="date" id="filterFechaHasta" />
+        </div>
+        <div class="filter-group">
+          <label>&nbsp;</label>
+          <button id="btnFiltrar">🔎Buscar</button>
+        </div>
+      </div>
+
+      <!-- Tabla + paginación -->
+      <div id="solicitudesContainer">
+        <div class="loading">Cargando solicitudes...</div>
+      </div>
+      <div id="paginationContainer" class="pagination"></div>
+    </div>
+
+    <!-- Modal detalle + cambio estado -->
+    <div id="modalDetalle" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Detalles de solicitud - Cambio de estado</h2>
+          <span class="close-modal">&times;</span>
+        </div>
+        <div id="detalleBody">Cargando...</div>
+        <div class="form-change">
+          <h3>Cambiar estado</h3>
+          <select id="nuevoEstadoSelect"></select>
+          <textarea
+            id="observacion"
+            rows="2"
+            placeholder="Observación (obligatoria)"
+          ></textarea>
+          <button id="btnConfirmarCambio">Confirmar cambio</button>
+          <div id="changeMessage"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

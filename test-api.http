@@ -1,0 +1,28 @@
+### Probar health
+GET http://localhost:3000/health
+
+### Listar solicitudes
+GET http://localhost:3000/api/solicitudes
+
+### Crear una solicitud (cambia los IDs según tus datos reales)
+POST http://localhost:3000/api/solicitudes
+Content-Type: application/json
+
+{
+    "numero_credito": "CR-001",
+    "monto_solicitado": 10000,
+    "plazo_meses": 12,
+    "id_cliente": 1,
+    "id_asesor": 1,
+    "id_auxiliar": 2,
+    "id_estado_actual": 1
+}
+
+### Cambiar estado
+PATCH http://localhost:3000/api/solicitudes/1/estado
+Content-Type: application/json
+
+{
+    "nuevo_estado_id": 2,
+    "comentario": "En revisión"
+}
