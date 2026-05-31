@@ -173,48 +173,60 @@ function aplicarFiltrosYRender() {
 }
 
 async function abrirDetalle(id, focusChange = false) {
-  const modal = document.getElementById("modalDetalle");
-  const detalleDiv = document.getElementById("detalleBody");
+  const modal = document.getElementById('modalDetalle');
+  const detalleDiv = document.getElementById('detalleBody');
+  const formChangeDiv = document.querySelector('.form-change');
+  const modalTitle = document.querySelector('#modalDetalle h2');
+  
   detalleDiv.innerHTML = '<div class="loading">Cargando detalles...</div>';
-  modal.style.display = "flex";
+  modal.style.display = 'flex';
+  
+  if (focusChange) {
+    formChangeDiv.style.display = 'block';
+    modalTitle.innerText = 'Cambiar estado de solicitud';
+  } else {
+    formChangeDiv.style.display = 'none';
+    modalTitle.innerText = 'Detalle de solicitud';
+  }
+  
   try {
     const res = await fetch(`${API_BASE}/solicitudes/${id}`);
     const data = await res.json();
-     if (!data.success) throw new Error(data.error);
-      const sol = data.data;
-      const historial = data.historial || [];
-      solicitudEnModal = sol;
-
-    let html = `<div style="color: white"; style="margin-bottom: 16px;"><strong>N° Crédito:</strong> ${escapeHtml(sol.numero_credito)}</div>
-                <div style="color: white";><strong>Cliente:</strong> ${escapeHtml(sol.cliente_nombre)} (ID: ${escapeHtml(sol.identificacion || "N/A")})</div>
-                <div style="color: white";><strong>Monto:</strong> $${Number(sol.monto_solicitado).toLocaleString()}</div>
-                <div style="color: white";><strong>Plazo:</strong> ${sol.plazo_meses} meses</div>
-                <div style="color: white";><strong>Asesor:</strong> ${escapeHtml(sol.asesor_nombre)}</div>
-                <div style="color: white";><strong>Auxiliar:</strong> ${escapeHtml(sol.auxiliar_nombre)}</div>
-                <div style="color: white";><strong>Estado actual:</strong> ${estadosMap.get(sol.id_estado_actual) || sol.estado_nombre}</div>
+    if (!data.success) throw new Error(data.error);
+    const sol = data.data;
+    const historial = data.historial || [];
+    solicitudEnModal = sol;
+    
+    
+    let html = `<div style="margin-bottom: 16px;"><strong>N° Crédito:</strong> ${escapeHtml(sol.numero_credito)}</div>
+                <div><strong>Cliente:</strong> ${escapeHtml(sol.cliente_nombre)} (ID: ${escapeHtml(sol.identificacion || 'N/A')})</div>
+                <div><strong>Monto:</strong> $${Number(sol.monto_solicitado).toLocaleString()}</div>
+                <div><strong>Plazo:</strong> ${sol.plazo_meses} meses</div>
+                <div><strong>Asesor:</strong> ${escapeHtml(sol.asesor_nombre)}</div>
+                <div><strong>Auxiliar:</strong> ${escapeHtml(sol.auxiliar_nombre)}</div>
+                <div><strong>Estado actual:</strong> ${estadosMap.get(sol.id_estado_actual) || sol.estado_nombre}</div>
                 <hr><h4>Historial de cambios</h4>`;
-    if (historial.length === 0) html += "<p>Sin cambios registrados</p>";
-    historial.forEach((h) => {
-      html += `<div style="margin-bottom: 8px;"><strong>${new Date(h.fecha_cambio).toLocaleString()}</strong> → ${h.estado_nuevo_nombre || h.id_estado_nuevo}<br>${h.comentario ? `📝 ${escapeHtml(h.comentario)}` : ""}</div>`;
+    if (historial.length === 0) html += '<p>Sin cambios registrados</p>';
+    historial.forEach(h => {
+      html += `<div style="margin-bottom: 8px;"><strong>${new Date(h.fecha_cambio).toLocaleString()}</strong> → 
+      ${h.estado_nuevo_nombre || h.id_estado_nuevo}<br>${h.comentario ? `${escapeHtml(h.comentario)}` : ''}</div>`;
     });
+    
     detalleDiv.innerHTML = html;
-
-    const select = document.getElementById("nuevoEstadoSelect");
-    select.innerHTML = "";
-    for (let [idEstado, nombre] of estadosMap.entries()) {
-      const disabled = idEstado == sol.id_estado_actual ? "disabled" : "";
-      select.innerHTML += `<option value="${idEstado}" ${disabled}>${nombre}</option>`;
-    }
-    document.getElementById("observacion").value = "";
-    document.getElementById("changeMessage").innerHTML = "";
     if (focusChange) {
-      document.querySelector(".form-change").scrollIntoView({ behavior: "smooth" });
+      const select = document.getElementById('nuevoEstadoSelect');
+      select.innerHTML = '';
+      for (let [idEstado, nombre] of estadosMap.entries()) {
+        const disabled = (idEstado == sol.id_estado_actual) ? 'disabled' : '';
+        select.innerHTML += `<option value="${idEstado}" ${disabled}>${nombre}</option>`;
+      }
+      document.getElementById('observacion').value = '';
+      document.getElementById('changeMessage').innerHTML = '';
     }
   } catch (err) {
-    detalleDiv.innerHTML = `<div class="error-msg"> Error: ${err.message}</div>`;
+    detalleDiv.innerHTML = `<div class="error-msg">Error: ${err.message}</div>`;
   }
 }
-
 async function cambiarEstado() {
   if (isSending) return;
   if (!solicitudEnModal) return;

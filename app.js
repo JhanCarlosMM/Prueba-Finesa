@@ -17,7 +17,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 2. Ruta de prueba (sin dependencias)
+// 2. Ruta de prueba
 app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date() });
 });
@@ -27,7 +27,7 @@ app.use("/api/solicitudes", solicitudRoutes);
 
 app.use("/api/estados", estadosRoutes);
 
-// 4. Manejador 404 (debe ir al final)
+// 4. Manejador 404
 app.use((req, res) => {
   res.status(404).json({ success: false, error: "Ruta no encontrada" });
 });
